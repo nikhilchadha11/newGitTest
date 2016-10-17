@@ -1,0 +1,32 @@
+sudo service mysql start
+
+hdfs namenode -format
+$HADOOP_HOME/sbin/start-yarn.sh
+$HADOOP_HOME/sbin/start-dfs.sh
+$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
+$HADOOP_HOME/sbin/start-all.sh
+
+hive --service metastore&
+hiveserver2&
+
+$SPARK_HOME/sbin/start-all.sh
+
+$HBASE_HOME/bin/start-hbase.sh
+
+
+
+
+
+
+$HBASE_HOME/bin/stop-hbase.sh
+
+$SPARK_HOME/sbin/stop-all.sh
+
+# * get ServiceIDs from JPS for 
+sudo kill -9 ServiceID
+
+$HADOOP_HOME/sbin/stop-dfs.sh
+$HADOOP_HOME/sbin/stop-yarn.sh
+$HADOOP_HOME/sbin/stop-all.sh
+
+sudo service mysql stop

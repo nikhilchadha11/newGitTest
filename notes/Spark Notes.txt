@@ -1,0 +1,103 @@
+Iterative Jobs
+Interactive Analytics
+
+Executor -> Resources are Pre-defined in Configuration
+
+hdfs fsck path -files -blocks -locations
+
+-----------------------------------------------------------
+
+Var x = 10;
+x = 20;
+
+Val y = 10;
+y = 20;     -> Not Possible
+
+
+Object -> Starting Point -> Singleton Pattern
+
+Object MyJob{..main..}
+
+Object MyJob extends APP {..main..}
+
+
+def main{};
+
+def print(){}
+def print():unit {}
+def sum(a: Int, b: Int): Int {a+b}
+def sum(a:Int, b:Int):Int = a+b
+
+-----------------------------------------------------------
+
+1 Load files
+2. Filter Rating /files
+3. Count id VS Rating
+4. Join
+5. Filter
+
+-----------------------------------------------------------
+
+SqlContext
+-- Derby DB Can have only one session available at a time
+
+Hive Spark talk to same metastore
+cp hive/conf/hive-site.xml spark/conf
+
+-----------------------------------------------------------
+Data Frames -> RDDs with Schemas
+
+Json API
+Parquet File
+Text
+
+-----------------------------------------------------------
+sc.accumulator() -> Hadoop Counter
+sc.broadcast()   -> Distributed Cache
+
+-----------------------------------------------------------
+GraphX
+
+sc.parallelize(DataStrucrcture)
+
+-----------------------------------------------------------
+Spark Streaming
+D Streams
+Windowing () [) (]
+
+-----------------------------------------------------------
+Kafka (Zookeeper)
+
+Producer
+Broker
+Topic
+Partition
+Leader
+Slave
+Consumer
+
+-----------------------------------------------------------
+Performance Optimization
+
+1. Memory Utilization -> JVM Heap Dump -> JConsole + JProfile
+2. Algorithm Optimization
+3. Reduce Disk I/O
+4. Network I/O
+5. Serialization-Kairo-Chairo
+6. Caching of Data in Distributed Cache - Un-Cache
+7. ReduceByKey Preferred than GroupByKey
+8. Increase the Number of Partitions
+
+-----------------------------------------------------------
+Performance Optimization
+
+Identify the number of Stages -> 
+    1. Every Shuffle will create a new stage -> Reduce the number of Shuffle
+	2. Use Distributed Cache
+	3. Memory Distribution -> Ram - Worker - Executor - Cache(%) -> HashMap Utilization Only
+	4. Cores mapped to an Executor!!!
+	5. Prefer ReduceByKey than GroupByKey
+	6. Secondary Sort -> to make it more optimized -> RepartitionAndSortWitnigPartition
+	7. 
+
+

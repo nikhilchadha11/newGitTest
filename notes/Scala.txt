@@ -1,0 +1,248 @@
+def abs(x:Int):Int = if (x<0) -x else x;
+
+x: => Int   -> used for Call by Name
+
+Boolean Operators and Fixed Values:
+true 
+false 
+!b 
+a && b 
+a || b 
+a >= b 
+a <= b 
+a >  b 
+a <  b 
+a == b 
+a != b 
+
+Rules of Boolean Values:
+
+!true      = false
+!false     = true
+true  && e = e
+false && e = false
+true  || e = true
+false || e = e
+
+val => pass by value
+def => pass by name
+
+@taitrec -> annotation for tail recursive functions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Annotations to read the further document:
+| denotes an alternative
+[...] an option [0 or 1]
+{...} a repetition (0 or more)
+
+
+Types:
+
+Int, Double, Byte, Short, Char, Long, Float
+Boolean
+String
+
+Type Cateogires:
+
+Type         = SimpleType | FunctionType
+SimpleType   = Ident
+FunctionType = SimpleType '=>' Type | '(' [Types] ')' '=>' Type
+Types        = {',' Type}
+
+
+
+Expressions:
+
+Expr          = InfixExpr  | FunctionExpr | 'if' '(' Expr ')' Expr 'else' Expr
+InfixExpr     = PrefixExpr | InfixExpr Operator InfixExpr
+PrefixExpr    = [ '+' | '-' | '!' | '~' ] SimpleExpr
+SimpleExpr    = Ident | Lateral | SimpleExpr '.' ident | Block
+FunctionExpr  = Bindings '=>' Expr
+Bindings      = Ident [ ':' SimpleType ] | '(' [ Binding { ',' Binding } ] ')'
+Binding       = Ident [ ':' Type ]
+Block         = '{' { Def ';' } Expr '}'
+
+Expression Categories:
+
+identifier             -> x, isGoodEnough
+literal                -> 0, 1.0, "abc"
+function application   -> sort(q)
+operator application   -> -x, x+y
+selection              -> math.abs
+conditional expression -> if ( x < 0 ) -x else x;
+block                  -> { val x = math.abs(y); x * 2 }
+anonymous Function     -> x => x + 1
+
+
+Definitions:
+
+Def        = FunDef | ValDef
+FunDef     = def ident { '(' [ Parameters ] ')' } [ ':' Type ] '=' Expr
+ValDef     = val ident [ ':' Type ] '=' Expr
+Parameter  = ident ':' [ '=>' ] Type
+Parameters = Parameter { ',' Parameter }
+
+
+Infix Notation:
+    a function b = a.funtion(b)
+
+Relaxed Identifiers:
+    1. Alphanumeric -> Starting with letters followed by a sequence of letters or numbers                         -> ("x1")
+	2. Symbolic     -> Starting with an operator symbol followed by other operator symbols                        -> ("*" , "+?%&")
+	3. Underscore   -> The underscore character coults as a letters. 
+	                   Alphanumeric identifiers can also end in an underscore, followed by some operator symbols  -> ("vector_++" , "counter_=")
+    unary_- => negative of a number -> Prefix Operators;
+
+Operator Precedance: precedance of an operator is determined by its first character.
+"Lowest"
+all letters
+|
+^
+&
+< >
+= !
+:
++ -
+* / %
+all other special characters
+"Highest"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Class Hierarchies:
+abstract class: can't be instantiated / may or may not have unimplemented or implemented methods
+
+Persistant Data Structures:
+
+Model of Evaluation:
+
+Dynamic Binding:
+Dynamic method dispatch -> The code invoked by a method call depends on the runtime type of the object that contains the method
+
+Family Writing:
+
+
+How Classes and Objects are organized:
+packages keyword to map an element to a package.
+import elements from other packages using the keyword import.
+
+Forms of Import:
+    import package.name.class
+    import package.name.object
+    import package.name.{class1, class2, object1}
+	import package.name._
+
+Auto imports in all Scala Programs:
+    1. All members of the package scala
+	2. All members of the package java.lang
+	3. All members of the Singleton Object scala.Predef
+
+Int     => scala.Int()
+Boolean => scala.Boolean()
+Object  => java.lang.Object()
+require => scala.Predef.require
+assert  => scala.Predef.assert
+
+
+Traits -> resemble Interfaces in Java, but are more powerful as they can contain fields and concrete methods and cannot have value parameters:
+
+Single Class Inheritance allowed.
+
+if Shape is a class and Planar and movable are two traits,
+
+class Square extends Shape with Planar with Movable
+
+
+
+
+
+Scala's Class Hierarchy
+
+
+scala.Any
+|----> scala.AnyVal
+|----|----> scala.Unit <--------------------------------------------|
+|----|----> scala.Boolean <-----------------------------------------|
+|----|----> scala.Char <--------------------------------------------|
+|----|----> scala.Double <------------------------------------------|
+|----|------V----> scala.Float <------------------------------------|
+|----|------V------V----> scala.Long <------------------------------|
+|----|------V------V------V----> scala.Int <------------------------|
+|----|------V------V------V------V----> scala.Short <---------------|
+|----|------V------V------V------V------V----> scala.Byte <---------|
+|----> scala.AnyRef (java.lang.Object)                              |
+|----|----> All Java Classes                                        |
+|----|----> scala.ScalaObject                                       |
+|----|------V----> All Scala Classes                                |
+|----|------V------V----> scala.Null                                |
+|----|------V------V------V----> scala.Nothing----------------------|
+
+
+Exception Handelling -> 
+throw Exc
+
+Type Earsure: Java/Scala/Haskell/ML/OCaml
+
+Polymorphism -> Subtyping + Generics
+
+Variance:
+	IF there are 4 types A1, A2, B1 and B2, such that
+		1. A1 :> A2
+		2. B1 <: B2
+	THEN 
+		F1:(A1 => B1) <: F2:(A2 => B2)
+trait Function1[-T, +U] {
+	def apply(x: T): U
+}
+
+
+
+Vector: More Evenly Balanced Access Patterns -> Shallow Trees -> Access Time of Log(N, 32)
+
+	Very good for All Element Modifications -> Like Map / Folds / Filters
+
+	-> If n > 0    && n <= 2^ 5  -> L1 -> Single Array of 32 Elements
+	-> If n > 2^ 5 && n <= 2^10  -> L2 -> Array of 32 Pointers to Array of 32 Elements
+	-> If n > 2^10 && n <= 2^15  -> L3 -> Array of 32 Pointers to Array of 32 Pointers to Array of 32 Elements
+	-> If n > 2^15 && n <= 2^20  -> L4 -> Array of 32 Pointers to Array of 32 Pointers to Array of 32 Pointers to Array of 32 Elements
+	-> If n > 2^20 && n <= 2^25  -> L5 -> Array of 32 Pointers to Array of 32 Pointers to Array of 32 Pointers to Array of 32 Pointers to Array of 32 Elements
+	-> If n > 2^25 && n <= 2^30  -> L6 -> Array of 32 Pointers to Array of 32 Pointers to Array of 32 Pointers to Array of 32 Pointers to Array of 32 Pointers to Array of 32 Elements
+
+
++: => Add Element to Left 
+:+ => Add Element to Right
+
+
+Range: Upper Bound, Lower Bound, Step Value
+
+Combinatorial Searches => Nested Loop Expressions
+
+Note -> xs flatMap f  "IS THE SAME AS"  (xs map f).flatten
+
+

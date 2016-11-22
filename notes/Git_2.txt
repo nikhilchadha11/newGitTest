@@ -1,0 +1,14 @@
+mkdir gitRepositories
+cd gitRepositories
+git clone https://github.com/nikhilchadha11/newGitTest.gitn
+
+git status
+git add index.html
+git add .
+git add -A
+
+git commit -m "Added Index html"
+git push
+git pull
+
+git -> will list the list of commands for git

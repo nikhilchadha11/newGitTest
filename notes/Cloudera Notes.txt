@@ -1,0 +1,13 @@
+QuickStart VM Startup Order:
+
+Yarn
+HDFS
+Zookeeper
+Hive
+Impala
+Oozie
+Spark
+SQOOP
+SolR
+HUE
+

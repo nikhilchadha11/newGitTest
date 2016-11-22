@@ -1,0 +1,28 @@
+1. Reference same Object with multiple references
+    void Function ( List<String> InputCandidates, List<String> RejectedCandidates, List<String> AcceptedCandidates ) {...}
+
+2. Function Overloading
+
+3. Spark SQL -> Can I create External Tables -> Can I Map a table to a specified path -> External Tables are possible
+
+4. Create Schema from header of the Text File automatically -> Data Brick Spark -> Infer Schema -> CSV API
+
+5. ORC File Read -> using Hive Context
+
+6. Create External Table from Spark Dataframes -> Not yet possible
+
+7. How do we access and read Video / Audio / Image Files in Spark?
+   Are there any Input Format specific to Video / Audio / Image?
+   What are the Accepted Extensions?
+
+8. Same as Counters in Hadoop
+
+9. Can the same SourceVertex and DestVertex have more than 1 Relationships? -> USe List in Edges instead of String
+
+10. How do we Persist a Graph?
+
+11. Can we use a GraphDB like Neo4J? -> There are Direct APIs
+
+12. These are Directed Graphs. How do we Figure Out if the Graph is Cyclic or ACyclic?
+
+13. 

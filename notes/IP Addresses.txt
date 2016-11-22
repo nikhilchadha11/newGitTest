@@ -1,0 +1,4 @@
+master.tavant.com -> 10.129.160.59
+data01.tavant.com -> 10.129.160.60
+data02.tavant.com -> 10.129.160.63
+Laptop            -> 10.129.160.67

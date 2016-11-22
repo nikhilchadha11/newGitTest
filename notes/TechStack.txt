@@ -1,0 +1,16 @@
+Cloudera Stack:
+Hive                -> Basics to Intermediate Completed   => Advanced Learning on the Job
+Hadoop              -> Basics to Intermediate Completed   => Advanced Learning on the Job
+Yarn                -> Basic Completed                    => Intermediate to Advanced Learning on the Job
+Spark               -> Basics Learning                    => !Completed
+Hue                 -> Basic Completed                    => Intermediate to Advanced Learning on the Job
+Oozie               -> Basic Completed                    => Intermediate to Advanced Learning on the Job
+Impala              -> Basic Completed                    => Intermediate to Advanced Learning on the Job
+Zookeeper           -> Basic Completed                    => Intermediate to Advanced Learning on the Job
+
+Others:
+Scala               -> Basics to Intermediate Completed   => Advanced Learning on the Job
+ScalaTest[FunSuite] -> Basics to Learn                    => Not Started Yet
+Apache Maven        -> Basic Completed                    => Intermediate to Advanced Learning on the Job
+S-coverage          -> Basics to Learn                    => Not Started Yet
+Git                 -> Basics to Learn                    => Not Started Yet

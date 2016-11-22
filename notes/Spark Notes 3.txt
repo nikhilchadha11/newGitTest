@@ -1,0 +1,51 @@
+Advanced Spark Concepts:
+
+  Shared Variables:
+  
+    Accumulators:
+	
+	  They are same as Hadoop Counters
+	  Initialize -> val abc = sc.accumulator(0)
+	  Functions -> "+="
+	  Access Property -> "value"
+	  For worker nodes, Accumulators are WRITE-ONLY variables
+	  For Acc used in Actions (like foreach), Spark applies Each Task's update to each accumulator only once holding Fault Tolerance
+	  For Acc used in RDD Txs instead of Actions, It does not Gurrantee Fault Tolerance
+	  Spark provides "AccumulatorParam" API to create Custom Accumulators, we just need to extnd it
+	  It is important to remember that we should use Comutative and Associative Operators for Accumulators
+	  
+	  
+	Broadcast Variables:
+	  They allow the program to efficiently send a large read-only value to all the worker nodes for use in one or more Spark Operations.
+	  Initialize -> val xyz = sc.broadcast(datasetOfSerializableType)
+	  Access Property -> "value"
+	  Should be Treated as READ-ONLY
+	
+	Per-Partition Basis Transformations:
+	  mapPartitions()        -> 
+	  mapPartitionsWithIndex -> 
+	  foreachPartition()     -> 
+	  
+	  
+	  
+  Spark Pipes:
+    Pipe() Function for every RDD.
+	Call code that can read and write to unix file system.
+	Code reads every line as a string and writes every line also as a string.
+	
+  Numeric RDD Operations:
+    count()
+	mean()
+	sum()
+	max()
+	min()
+	variance()
+	sampleVariance()
+	stdev()
+	sampleStdev()
+	
+  Cluster Execution -> [Spark Driver -> cluster Master (Mesos / Yarn / Standalone) -> Cluster Worker(s) -> Executor(s)]
+	Driver:
+	  Creates the Spark Context, RDDs and Performs the Transformations and Actions.
+	  
+	  

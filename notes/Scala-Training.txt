@@ -1,0 +1,30 @@
+Statically Type Language
+Type Inference Language
+
+
+Scala - Java Code Reusability Directly
+Lazy Variable Definition
+
+Any -> Java and Scala Objects returned
+
+BigDecimal
+
+isInstanceOf
+asInstanceOf
+
+Not a Possibility to Pass variables for one context to another without the variable being stored into a file!!
+Nothing before Contect can be resolved into Spark... not even Distribured Cache!!
+
+while
+for
+foreach
+
+yield
+
+closure
+
+Trait Precedance Handeling doesnot exist
+
+companion -> FriendFunction
+
+

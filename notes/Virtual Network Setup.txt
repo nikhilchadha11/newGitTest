@@ -1,0 +1,820 @@
+Virtual Network Setup:
+
+1. Create Bridged Network / NAT
+
+2. Create Internal Network -> Host Only with DHCP
+
+3. Setup openssh-server -> for all the systems
+    sudo apt install openssh-server
+	
+3. Setup vim -> for all the systems
+    sudo apt install vim
+	
+4. add hosts -> For all the systems
+    linux   -> /etc/hosts
+	windows -> C:\Windows\System32\drivers\etc
+	192.168.56.101  master.tavant.com       master  # IP Address of the Master Node
+	192.168.56.102  data01.tavant.com       data01  # IP Address of the Slave 1 Node
+	192.168.56.103  data02.tavant.com       data02  # IP Address of the Slave 2 Node
+	192.168.56.104  database.tavant.com     database
+	
+5. Create User with sudo access without password -> For all the systems
+	sudo passwd root
+	
+	sudo vim /etc/sudoers
+	
+	Replace the line 
+        %admin ALL=(ALL) ALL
+	With
+        %admin ALL=(ALL) NOPASSWD:ALL
+	And Move
+        %sudo   ALL=(ALL:ALL) ALL
+	Above
+        %admin ALL=(ALL) NOPASSWD:ALL
+	Then
+        sudo groupadd admin
+        sudo adduser nikhil
+        sudo usermod -aG sudo nikhil
+        sudo usermod -aG admin nikhil
+        su - nikhil
+		sudo ls -la /root
+
+6. Database System Setup
+	
+	sudo adduser hduser
+	sudo adduser hduser sudo
+	sudo adduser hduser admin
+
+	su - nikhil
+	ssh-keygen -t rsa -P ''
+
+	cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+
+	su - hduser
+	ssh-keygen -t rsa -P ''
+
+	cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+
+	On the Master for hduser:
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@database.tavant.com
+	On the Slave 1 for hduser:
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@database.tavant.com
+	On the Slave 2 for hduser:
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@database.tavant.com
+	On the Database for hduser:
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@master.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data01.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data02.tavant.com
+	
+	Test Connectivity to all the systems:
+		ssh master
+		ssh data01
+		ssh data02
+		ssh database
+		ssh master.tavant.com
+		ssh data01.tavant.com
+		ssh data02.tavant.com
+		ssh database.tavant.com
+
+	On the Master for nikhil:
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@database.tavant.com
+	On the Slave 1 for nikhil:
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@database.tavant.com
+	On the Slave 2 for nikhil:
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@database.tavant.com
+	On the Database for nikhil:
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@master.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data01.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data02.tavant.com
+
+	Test Connectivity to all the systems:
+		ssh master
+		ssh data01
+		ssh data02
+		ssh database
+		ssh master.tavant.com
+		ssh data01.tavant.com
+		ssh data02.tavant.com
+		ssh database.tavant.com	
+	
+7. MySQL Server Setup + User Setup
+
+	sudo apt-get install mysql-server
+	sudo service mysql start
+	sudo apt-get install libmysql-java
+	sudo ln -s /usr/share/java/libmysql-java.jar /usr/lib/hive/lib/libmysql-java.jar
+
+	sudo /usr/bin/mysql_secure_installation
+		VALIDATE PASSWORD PLUGIN : N
+		Change the password for root ? ((Press y|Y for Yes, any other key for No) : N
+		Remove anonymous users? (Press y|Y for Yes, any other key for No) : Y
+		Disallow root login remotely? (Press y|Y for Yes, any other key for No) : N
+		Remove test database and access to it? (Press y|Y for Yes, any other key for No) : Y
+		Reload privilege tables now? (Press y|Y for Yes, any other key for No) : Y
+
+	sudo apt-get install sysv-rc-conf
+	sudo sysv-rc-conf -list | grep -i "MySQL"
+		
+	scp hduser@master:/usr/local/hive/scripts/metastore/upgrade/mysql/hive-schema-2.1.0.mysql.sql /home/hduser	
+	scp hduser@master:/usr/local/hive/scripts/metastore/upgrade/mysql/hive-txn-schema-2.1.0.mysql.sql /home/hduser	
+
+	sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
+	
+	mysql -u root -p
+	CREATE DATABASE metastore;
+	USE metastore;
+	SOURCE /home/hduser/hive-schema-2.1.0.mysql.sql;
+	
+	CREATE USER 'root'@'192.168.56.101' IDENTIFIED BY 'root';
+	GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.56.101';
+
+	CREATE USER 'root'@'192.168.56.102' IDENTIFIED BY 'root';
+	GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.56.102';
+
+	CREATE USER 'root'@'192.168.56.103' IDENTIFIED BY 'root';
+	GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.56.103';
+
+	CREATE USER 'root'@'192.168.56.104' IDENTIFIED BY 'root';
+	GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.56.104';
+	
+	exit
+	
+8. Hadoop Single Node Setup -> https://xuri.me/2015/03/09/setup-hadoop-on-ubuntu-single-node-cluster.html
+	
+	sudo apt-get update
+	sudo apt-get install openjdk-8-jdk
+	java -version
+
+	sudo addgroup hadoop_group
+	sudo adduser --ingroup hadoop_group hduser
+
+	sudo adduser hduser sudo
+	sudo adduser hduser admin
+	sudo adduser nikhil hadoop_group
+
+	su - nikhil
+	ssh-keygen -t rsa -P ''
+
+	cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+
+	su - hduser
+	ssh-keygen -t rsa -P ''
+
+	cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+
+	wget http://ftp.tc.edu.tw/pub/Apache/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz
+	sudo tar -xvzf hadoop-*.tar.gz -C /usr/local/ && sudo mv /usr/local/hadoop-* /usr/local/hadoop
+
+	sudo vim ~/.bashrc
+	sudo echo "# Set Java environment variables" >> ~/.bashrc
+	sudo echo "export JAVA_HOME=\$(readlink -f /usr/bin/java | sed \"s:bin/java::\")" >> ~/.bashrc
+	sudo echo "# Set Hadoop-related environment variables" >> ~/.bashrc
+	sudo echo "export HADOOP_HOME=/usr/local/hadoop" >> ~/.bashrc
+	sudo echo "# Add Hadoop bin/ directory to PATH" >> ~/.bashrc
+	sudo echo "export PATH=\$PATH:\$HADOOP_HOME/bin:\$HADOOP_HOME/sbin" >> ~/.bashrc
+
+	source ~/.bashrc
+
+	sudo vim $HADOOP_HOME/etc/hadoop/hadoop-env.sh
+
+		replace
+			export JAVA_HOME=${JAVA_HOME}
+		with
+			export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
+		
+	sudo mkdir -p /app/hadoop/tmp
+	sudo chown hduser:hadoop_group /app/hadoop/tmp
+	# sudo chown nikhil:hadoop_group /app/hadoop/tmp
+
+	sudo chmod 750 /app/hadoop/tmp
+	sudo chmod 777 /usr/local/hadoop
+
+	sudo vim $HADOOP_HOME/etc/hadoop/core-site.xml
+
+	# Add the following lines between Configuration
+		<property>
+			<name>hadoop.tmp.dir</name>
+			<value>/app/hadoop/tmp</value>
+			<description>A base for other temporary directories.</description>
+		</property>
+
+		<property>
+			<name>fs.default.name</name>
+			<value>hdfs://localhost:54310</value>
+			<description>The name of the default file system.  A URI whose
+			scheme and authority determine the FileSystem implementation.  The
+			uri's scheme determines the config property (fs.SCHEME.impl) naming
+			the FileSystem implementation class.  The uri's authority is used to
+			determine the host, port, etc. for a filesystem.</description>
+		</property>
+
+	sudo cp $HADOOP_HOME/etc/hadoop/mapred-site.xml.template $HADOOP_HOME/etc/hadoop/mapred-site.xml
+	sudo vim $HADOOP_HOME/etc/hadoop/mapred-site.xml
+
+		<property>
+			<name>mapred.job.tracker</name>
+			<value>localhost:54311</value>
+			<description>The host and port that the MapReduce job tracker runs
+			at.  If "local", then jobs are run in-process as a single map
+			and reduce task.
+			</description>
+		</property>	
+
+	sudo vim $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+
+		<property>
+			<name>dfs.replication</name>
+			<value>2</value>
+			<description>Default block replication.
+			The actual number of replications can be specified when the file is created.
+			The default is used if replication is not specified in create time.
+			</description>
+		</property>
+		
+	hdfs namenode -format
+
+	start-dfs.sh && start-yarn.sh
+
+		http://192.168.56.101:50070/dfshealth.html#tab-overview
+		http://master.tavant.com:50070/dfshealth.html#tab-overview
+		
+		http://192.168.56.102:50070/dfshealth.html#tab-overview
+		http://data01.tavant.com:50070/dfshealth.html#tab-overview
+		
+		http://192.168.56.103:50070/dfshealth.html#tab-overview
+		http://data02.tavant.com:50070/dfshealth.html#tab-overview
+		
+	stop-dfs.sh && stop-yarn.sh
+		
+9. Hadoop Multi Node Cluster -> https://xuri.me/2016/03/22/setup-hadoop-on-ubuntu-multi-node-cluster.html
+
+	sudo vim /etc/hosts
+		Add the following:
+		192.168.56.101  master.tavant.com       master  # IP Address of the Master Node
+		192.168.56.102  data01.tavant.com       data01  # IP Address of the Slave 1 Node
+		192.168.56.103  data02.tavant.com       data02  # IP Address of the Slave 2 Node
+
+	On the Master for hduser:
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data01.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data02.tavant.com
+	On the Slave 1 for hduser:
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@master.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data02.tavant.com
+	On the Slave 2 for hduser:
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@master.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data01.tavant.com
+
+	ssh master
+	ssh data01
+	ssh data02
+
+	ssh master.tavant.com
+	ssh data01.tavant.com
+	ssh data02.tavant.com
+
+	On the Master for nikhil:
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data01.tavant.com
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data02.tavant.com
+	On the Slave 1 for nikhil:
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@master.tavant.com
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data02.tavant.com
+	On the Slave 2 for nikhil:
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@master.tavant.com
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data01.tavant.com
+
+	ssh master
+	ssh data01
+	ssh data02
+
+	ssh master.tavant.com
+	ssh data01.tavant.com
+	ssh data02.tavant.com
+	
+
+	Cluster Setup:
+
+		All System Changes:
+
+		sudo vim $HADOOP_HOME/etc/hadoop/masters
+		add line
+			"master.tavant.com"
+
+		sudo vim $HADOOP_HOME/etc/hadoop/slaves	
+		add lines
+			"data01.tavant.com"
+			"data02.tavant.com"
+
+		sudo vim $HADOOP_HOME/etc/hadoop/core-site.xml	
+			replace
+				hdfs://localhost:54310
+			with
+				hdfs://master.tavant.com:54310
+			
+		sudo vim $HADOOP_HOME/etc/hadoop/mapred-site.xml
+			replace
+				localhost:54311
+			with
+				master.tavant.com:54311
+			
+		sudo vim $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+			change replication factor from 1 with 2
+			
+		sudo vim $HADOOP_HOME/etc/hadoop/yarn-site.xml
+
+			<property>
+				<name>yarn.resourcemanager.resource-tracker.address</name>
+				<value>master.tavant.com:8025</value>
+			</property>
+			<property>
+				<name>yarn.resourcemanager.scheduler.address</name>
+				<value>master.tavant.com:8035</value>
+			</property>
+			<property>
+				<name>yarn.resourcemanager.address</name>
+				<value>master.tavant.com:8050</value>
+			</property>
+		
+		Master Node Specific Changes:
+			sudo rm -rf /app/hadoop/tmp
+			sudo mkdir -pv /app/hadoop/tmp/hdfs/namenode
+			sudo chown hduser:hadoop_group -R /app/hadoop/tmp/
+			
+		Slave Node Specific Changes:
+			sudo rm -rf /app/hadoop/tmp	
+			sudo mkdir -pv /app/hadoop/tmp/hdfs/datanode
+			sudo chown hduser:hadoop_group -R /app/hadoop/tmp/
+
+		Master Node Specific Actions:
+			hdfs namenode -format
+			start-dfs.sh && start-yarn.sh
+			mr-jobhistory-daemon.sh start historyserver
+			http://master.tavant.com:8088
+			http://master.tavant.com:50070/dfshealth.html#tab-overview
+			stop-dfs.sh && stop-yarn.sh
+			stop-all.sh
+
+10. Hive Setup
+
+	a. Install Hive in Hadoop Client Node: 
+	   https://dwbi.org/etl/bigdata/188-install-hive-in-client-node-of-hadoop-cluster
+	b. Configuring Hive Metastore in MySQL Database Node:
+	   https://dwbi.org/etl/bigdata/190-configuring-mysql-as-hive-metastore
+
+	wget http://mirror.fibergrid.in/apache/hive/hive-2.1.0/apache-hive-2.1.0-bin.tar.gz
+	sudo tar -xvzf apache-hive-*.tar.gz -C /usr/local/ && sudo mv /usr/local/apache-hive-* /usr/local/hive
+
+	sudo vim ~/.bashrc
+	sudo echo "# Set Hive-related environment variables" >> ~/.bashrc
+	sudo echo "export HIVE_HOME=/usr/local/hive" >> ~/.bashrc
+	sudo echo "# Add Hive bin/ directory to PATH" >> ~/.bashrc
+	sudo echo "export PATH=\$PATH:\$HIVE_HOME/bin" >> ~/.bashrc
+
+	source ~/.bashrc
+
+	hadoop fs -mkdir       /tmp
+	hadoop fs -mkdir       /user
+	hadoop fs -mkdir       /user/hive
+	hadoop fs -mkdir       /user/hive/warehouse
+	hadoop fs -chmod g+w   /tmp
+	hadoop fs -chmod g+w   /user
+	hadoop fs -chmod g+w   /user/hive
+	hadoop fs -chmod g+w   /user/hive/warehouse
+
+	sudo cp $HIVE_HOME/conf/hive-default.xml.template $HIVE_HOME/conf/hive-site.xml
+	sudo vim $HIVE_HOME/conf/hive-site.xml
+
+	Replace the following components:
+
+		<name>javax.jdo.option.ConnectionURL</name>
+		<value>jdbc:mysql://database.tavant.com:3306/metastore?createDatabaseIfNotExist=true</value>
+
+
+		<name>javax.jdo.option.ConnectionDriverName</name>
+		<value>com.mysql.jdbc.Driver</value>
+
+
+		<name>javax.jdo.option.ConnectionUserName</name>
+		<value>root</value>
+
+		<name>javax.jdo.option.ConnectionPassword</name>
+		<value>root</value>
+
+		<name>hive.metastore.uris</name>
+		<value>thrift://localhost:9083</value>
+
+		<name>hive.exec.local.scratchdir</name>
+		<value>/tmp/hive</value>
+
+		<name>hive.downloaded.resources.dir</name>
+		<value>/tmp/hive/${hive.session.id}_resources</value>
+
+		<name>hive.server2.enable.doAs</name>
+		<value>false</value>
+
+		<name>hive.scratch.dir.permission</name>
+		<value>777</value>
+
+	cd /usr/local/hive/bin
+
+	sudo ln -s /usr/share/java/mysql-connector-java.jar $HIVE_HOME/lib/mysql-connector-java.jar
+
+	schematool -dbType mysql -userName root -passWord root -initSchema
+
+	hive --service metastore
+
+	Open another terminal
+	cp /usr/local/hive/jdbc/hive-jdbc-2.1.0-standalone.jar /usr/local/hive/lib/
+	beeline
+
+	Within Beeline Shell:
+		beeline> !connect jdbc:hive2:// root root
+		beeline> SHOW DATABASES;
+		beeline> USE default;
+		beeline> SHOW TABLES;
+		beeline> !quit
+
+	hiveserver2
+	Within Beeline Shell:
+		beeline> !connect jdbc:hive2://192.168.56.101:10000 root root
+		beeline> SHOW DATABASES;
+		beeline> USE default;
+		beeline> SHOW TABLES;
+		beeline> !quit
+
+	Start Services:
+		hive --service metastore&
+		hiveserver2&
+	Stop Services:
+			kill -9 ServiceID
+			# * get ServiceIDs from JPS
+
+
+11. Setup Client / Edge Node:
+    # -> For Testing Purposes we are using the Database System as client.
+ 
+	cd /usr/local
+	sudo scp -r hduser@master.tavant.com:/usr/local/hadoop /usr/local/
+
+	sudo vim ~/.bashrc
+
+	export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
+	export PATH=$PATH:$JAVA_HOME/bin
+	export HADOOP_HOME=/usr/local/hadoop
+	export PATH=$PATH:$HADOOP_HOME/bin
+	export PATH=$PATH:$HADOOP_HOME/sbin
+	export HADOOP_MAPRED_HOME=$HADOOP_HOME
+	export HADOOP_COMMON_HOME=$HADOOP_HOME
+	export HADOOP_HDFS_HOME=$HADOOP_HOME
+	export YARN_HOME=$HADOOP_HOME
+	export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+	export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
+	export CLASSPATH=$CLASSPATH:/usr/local/hadoop/lib/*:.
+
+	source ~/.bashrc
+
+	hadoop fs -ls /
+
+
+	
+12. SQL Developer connection to Hive:
+
+	IMP LINK: https://community.hortonworks.com/articles/1887/connect-oracle-sql-developer-to-hive.html
+
+	Download SQL Developer
+	http://www.oracle.com/technetwork/developer-tools/sql-developer/downloads/index.html
+	
+	Download Hive JDBC Connector
+	http://www.cloudera.com/content/www/en-us/downloads/connectors/hive/jdbc/2-5-15.html
+	https://downloads.cloudera.com/connectors/hive_jdbc_2.5.15.1040.zip?_ga=1.242734658.1730042422.1472977820
+
+13. Install Sqoop in Master Node: -> https://dwbi.org/etl/bigdata/191-install-sqoop-in-client-node-of-hadoop-cluster
+
+	cd /usr/local/
+	sudo wget http://www-eu.apache.org/dist/sqoop/1.4.6/sqoop-1.4.6.bin__hadoop-2.0.4-alpha.tar.gz
+	sudo tar -xzvf sqoop-1.4.6.bin__hadoop-2.0.4-alpha.tar.gz >> /dev/null
+	sudo mv sqoop-1.4.6.bin__hadoop-2.0.4-alpha /usr/local/sqoop
+	sudo rm sqoop-1.4.6.bin__hadoop-2.0.4-alpha.tar.gz
+	
+	sudo vim ~/.bashrc
+	
+	export SQOOP_HOME=/usr/local/sqoop
+	export PATH=$PATH:$SQOOP_HOME/bin
+	export HADOOP_OPTS=-Djava.security.egd=file:/dev/../dev/urandom
+	
+	source ~/.bashrc
+	
+	cd sqoop/conf
+	sudo cp sqoop-env-template.sh sqoop-env.sh
+	
+	sudo vim sqoop-env.sh
+	
+	export HADOOP_COMMON_HOME=/usr/local/hadoop
+	export HADOOP_MAPRED_HOME=/usr/local/hadoop
+	export HIVE_HOME=/usr/local/hive
+	
+	cd $SQOOP_HOME/
+	sudo mkdir sqoop_work
+	cd $SQOOP_HOME/bin
+	sqoop-version
+	sqoop help
+	
+	cd /usr/local/sqoop
+	sudo wget http://cdn.mysql.com//Downloads/Connector-J/mysql-connector-java-5.0.8.tar.gz
+	sudo tar -xzf mysql-connector-java-5.0.8.tar.gz >> /dev/null
+	sudo mv mysql-connector-java-5.0.8/mysql-connector-java-5.0.8-bin.jar /usr/local/sqoop/lib/
+	sudo rm -rf mysql-connector-java-5.0.8
+	sudo rm mysql-connector-java-5.0.8.tar.gz
+	
+	sudo wget http://download.oracle.com/otn/utilities_drivers/jdbc/11204/ojdbc6.jar?AuthParam=1472102440_acf2d63e2d3673651122947bf8cba738
+		sudo mv ojdbc6.jar  /usr/local/sqoop/lib/
+	
+	
+14. Import using Sqoop from MySQL: -> https://dwbi.org/etl/bigdata/192-sqoop-import-from-mysql
+
+a. Setup Sakila Schema:
+	
+cd $SQOOP_HOME/sqoop_work
+
+sudo wget http://downloads.mysql.com/docs/sakila-db.tar.gz
+sudo tar -xzvf sakila-db.tar.gz >> /dev/null
+
+ls sakila-db
+
+mysql -h database.tavant.com -u root -proot
+
+SOURCE /usr/local/sqoop/sqoop_work/sakila-db/sakila-schema.sql;
+SOURCE /usr/local/sqoop/sqoop_work/sakila-db/sakila-data.sql;
+
+CREATE USER 'sakila'@'localhost' IDENTIFIED BY 'sakila';
+GRANT ALL ON sakila.* TO 'sakila'@'localhost';
+
+CREATE USER 'sakila'@'%' IDENTIFIED BY 'sakila';
+GRANT ALL ON sakila.* TO 'sakila'@'%';
+
+CREATE USER 'sakila'@'192.168.56.101' IDENTIFIED BY 'sakila';
+GRANT ALL ON sakila.* TO 'sakila'@'192.168.56.101';
+
+FLUSH PRIVILEGES;
+quit;
+
+mysql -h database.tavant.com -u sakila -psakila
+
+SHOW DATABASES;
+USE sakila;
+SHOW TABLES;
+quit;
+
+sudo rm sakila-db.tar.gz
+sudo rm -rf sakila
+
+b. Import Sakila from MySQL to HDFS
+
+sqoop list-databases --connect jdbc:mysql://database.tavant.com:3306/ --username sakila --password sakila
+sqoop list-databases --connect jdbc:mysql://database.tavant.com:3306/ --username sakila -P
+
+sudo vim import_mysql.txt
+	Add the following Text:
+		list-databases
+		--connect
+		jdbc:mysql://database.tavant.com:3306/
+		--username
+		sakila
+		--password
+		sakila
+
+sqoop --options-file /usr/local/sqoop/sqoop_work/import_mysql.txt
+sqoop list-tables --connect jdbc:mysql://database.tavant.com:3306/sakila --username sakila --password sakila
+
+15. Install Pig in Database Client Node: -> https://dwbi.org/etl/bigdata/198-install-pig-in-client-node-of-hadoop-cluster
+
+	cd /usr/local
+	sudo wget http://www-us.apache.org/dist/pig/pig-0.16.0/pig-0.16.0.tar.gz
+	sudo tar -xzvf pig-0.16.0.tar.gz >> /dev/null
+	sudo mv pig-0.16.0 /usr/local/pig
+	sudo rm pig-0.16.0.tar.gz
+
+	sudo vim ~/.bashrc
+		export PIG_HOME=/usr/local/pig
+		export PATH=$PATH:$PIG_HOME/bin
+		
+		export CLASSPATH=$CLASSPATH:/usr/local/pig/lib/*:.
+		export PIG_CLASSPATH=$HADOOP_HOME/etc/hadoop
+
+	sudo source ~/.bashrc
+	cd $PIG_HOME/bin
+	pig -version
+
+
+16. Install Spark in Hadoop Cluster: -> https://dwbi.org/etl/bigdata/201-install-spark-in-hadoop-cluster
+
+a. Master Setup
+	cd /usr/local/
+	sudo wget http://d3kbcqa49mib13.cloudfront.net/spark-2.0.0-bin-hadoop2.7.tgz
+	sudo tar -xzvf spark-2.0.0-bin-hadoop2.7.tgz >> /dev/null
+	sudo mv spark-2.0.0-bin-hadoop2.7 /usr/local/spark
+	sudo rm spark-2.0.0-bin-hadoop2.7.tgz
+	sudo vim ~/.bashrc
+		export SPARK_HOME=/usr/local/spark
+		export PATH=$PATH:$SPARK_HOME/bin
+	source ~/.bashrc
+	cd $SPARK_HOME/conf
+	sudo cp spark-env.sh.template spark-env.sh
+	sudo vim spark-env.sh
+		export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
+		export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
+		export SPARK_WORKER_CORES=6
+		export SPARK_WORKER_DIR=/home/hduser/work/sparkdata
+	sudo vim slaves
+		hduser@data01.tavant.com
+		hduser@data02.tavant.com
+	sudo chown -R hduser /usr/local/spark
+
+b. Slave Setup (Execute in Master Node Itself)
+	cd /usr/local 
+	sudo scp -r spark hduser@data01.tavant.com:/home/hduser
+	sudo scp -r spark hduser@data02.tavant.com:/home/hduser
+	ssh hduser@data01.tavant.com
+	sudo mv /home/hduser/spark /usr/local
+	sudo chown -R hduser /usr/local/spark
+	sudo vim ~/.bashrc
+		export SPARK_HOME=/usr/local/spark
+		export PATH=$PATH:$SPARK_HOME/bin
+	source ~/.bashrc
+	exit
+	ssh hduser@data02.tavant.com
+	sudo mv /home/hduser/spark /usr/local
+	sudo chown -R hduser /usr/local/spark
+	sudo vim ~/.bashrc
+		export SPARK_HOME=/usr/local/spark
+		export PATH=$PATH:$SPARK_HOME/bin
+	source ~/.bashrc
+	exit
+
+Edge Node
+	sudo scp -r hduser@master.tavant.com:/usr/local/spark /usr/local/
+	sudo vim ~/.bashrc
+		export SPARK_HOME=/usr/local/spark
+		export PATH=$PATH:$SPARK_HOME/bin
+	source ~/.bashrc
+	
+	hadoop fs -mkdir -p /spark_analytics
+
+	$SPARK_HOME/bin/spark-shell --master yarn
+
+17. Install Zookeeper on Cluster: -> http://myjeeva.com/zookeeper-cluster-setup.html
+
+cd /usr/local
+sudo wget http://redrockdigimark.com/apachemirror/zookeeper/stable/zookeeper-3.4.9.tar.gz
+sudo tar -xzvf zookeeper-3.4.9.tar.gz >> /dev/null
+sudo rm zookeeper
+sudo mv zookeeper-3.4.9 /usr/local/zookeeper
+sudo chown -R hduser /usr/local/zookeeper
+sudo vim ~/.bashrc
+	export ZOOKEEPER_HOME=/usr/local/zookeeper
+	export PATH=$PATH:$ZOOKEEPER_HOME/bin
+source ~/.bashrc
+
+sudo cp /usr/local/zookeeper/conf/zoo_sample.cfg /usr/local/zookeeper/conf/zoo.cfg
+sudo vim /usr/local/zookeeper/conf/zoo.cfg
+
+	tickTime=2000
+	dataDir=/usr/local/zookeeeper/data
+	dataLogDir=/usr/local/zookeeeper/logs
+	clientPort=2181
+	initLimit=10
+	syncLimit=5
+	server.1=master.tavant.com:2888:3888
+	server.2=data01.tavant.com:2888:3888
+	server.3=data02.tavant.com:2888:3888
+
+ssh hduser@data01
+sudo scp -r hduser@master.tavant.com:/usr/local/zookeeper /usr/local/ >> /dev/null
+sudo chown -R hduser /usr/local/zookeeper
+
+sudo vim ~/.bashrc
+	export ZOOKEEPER_HOME=/usr/local/zookeeper
+	export PATH=$PATH:$ZOOKEEPER_HOME/bin
+source ~/.bashrc
+
+ssh hduser@data02
+sudo scp -r hduser@master.tavant.com:/usr/local/zookeeper /usr/local/ >> /dev/null
+sudo chown -R hduser /usr/local/zookeeper
+
+sudo vim ~/.bashrc
+	export ZOOKEEPER_HOME=/usr/local/zookeeper
+	export PATH=$PATH:$ZOOKEEPER_HOME/bin
+source ~/.bashrc
+
+sudo $ZOOKEEPER_HOME/bin/zkServer.sh start
+sudo $ZOOKEEPER_HOME/bin/zkServer.sh status
+sudo $ZOOKEEPER_HOME/bin/zkServer.sh stop
+
+18. Install HBASE on Hadoop Cluster: -> https://dwbi.org/etl/bigdata/200-install-hbase-in-hadoop-cluster
+
+	cd /usr/local
+	sudo wget http://www-us.apache.org/dist/hbase/stable/hbase-1.2.3-bin.tar.gz
+	sudo tar -xzvf hbase-1.2.3-bin.tar.gz >> /dev/null
+	sudo mv hbase-1.2.3 /usr/local/hbase
+	sudo rm hbase-1.2.3-bin.tar.gz
+	sudo vim ~/.bashrc
+		export HBASE_HOME=/usr/local/hbase
+		export PATH=$PATH:$HBASE_HOME/bin
+		export CLASSPATH=$CLASSPATH:/usr/local/hbase/lib/*:.
+	source ~/.bashrc
+
+	sudo vim $HBASE_HOME/conf/hbase-env.sh
+
+	export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
+	export HBASE_MANAGES_ZK=true
+
+	sudo vim $HBASE_HOME/conf/hbase-site.xml
+
+	<configuration>
+		<property>
+			<name>hbase.rootdir</name>
+			<value>hdfs://master.tavant.com:8020/hbase</value>
+		</property>
+		<property>
+			<name>hbase.cluster.distributed</name>
+			<value>true</value>
+		</property>
+		<property>
+			<name>hbase.zookeeper.property.dataDir</name>
+			<value>/usr/local/zookeeper/data</value>
+		</property>
+		<property>
+			<name>hbase.zookeeper.quorum</name>
+			<value>hduser@master.tavant.com</value>
+		</property>
+		<property>
+			<name>hbase.zookeeper.property.clientPort</name>
+			<value>2181</value>
+		</property>
+	</configuration>
+
+	sudo vim $HBASE_HOME/conf/regionservers
+		hduser@data01.tavant.com
+		hduser@data02.tavant.com
+
+	mkdir -p /usr/local/zookeeper
+
+# Region Server Setup
+
+	ssh data01.tavant.com
+	sudo rm -r /usr/local/zookeeper
+	cd /usr/local 
+	sudo scp -r hduser@master.tavant.com:/usr/local/hbase /usr/local >> /dev/null
+
+	sudo vim ~/.bashrc
+		export HBASE_HOME=/usr/local/hbase
+		export PATH=$PATH:$HBASE_HOME/bin
+		export CLASSPATH=$CLASSPATH:/usr/local/hbase/lib/*:.
+	source ~/.bashrc
+
+	exit
+
+	ssh data02.tavant.com
+
+	cd /usr/local 
+	sudo scp -r hduser@master.tavant.com:/usr/local/hbase /usr/local >> /dev/null
+
+	sudo vim ~/.bashrc
+		export HBASE_HOME=/usr/local/hbase
+		export PATH=$PATH:$HBASE_HOME/bin
+		export CLASSPATH=$CLASSPATH:/usr/local/hbase/lib/*:.
+	source ~/.bashrc
+
+	exit
+
+19. Apache NiFi
+
+	cd /usr/local
+	sudo wget http://mirror.fibergrid.in/apache/nifi/1.0.0/nifi-1.0.0-bin.tar.gz
+sudo tar -xzvf nifi-1.0.0-bin.tar.gz >> /dev/null
+sudo mv nifi-1.0.0 /usr/local/nifi
+sudo rm nifi-1.0.0-bin.tar.gz
+sudo vim ~/.bashrc
+export NIFI_HOME=/usr/local/nifi
+export PATH=$PATH:$NIFI_HOME/bin
+source ~/.bashrc
+sudo vim /usr/local/nifi/conf/nifi.properties
+	Replace 8080 with 6060
+nifi.sh {start|stop|run|restart|status|dump|install}
+	
+20 Apache Impala 2.7.0
+
+cd /usr/local
+sudo wget http://www.apache.org/dyn/closer.cgi?action=download&filename=incubator/impala/2.7.0/apache-impala-incubating-2.7.0.tar.gz
+sudo tar -xzvf apache-impala-incubating-2.7.0.tar.gz >> /dev/null
+sudo mv nifi-1.0.0 /usr/local/nifi
+sudo rm apache-impala-incubating-2.7.0.tar.gz
+	
+	sudo apt-get install impala             # Binaries for daemons
+	sudo apt-get install impala-server      # Service start/stop script
+	sudo apt-get install impala-state-store # Service start/stop script
+	sudo apt-get install impala-catalog     # Service start/stop script
+
+sudo scp /home/nikhil/apache-impala-incubating-2.7.0.tar.gz hduser@data01.tavant.com:/home/hduser/apache-impala-incubating-2.7.0.tar.gz
+sudo scp /home/nikhil/apache-impala-incubating-2.7.0.tar.gz hduser@data02.tavant.com:/home/hduser/apache-impala-incubating-2.7.0.tar.gz
+ssh data02
+sudo mv ./apache-impala-incubating-2.7.0.tar.gz /usr/local/

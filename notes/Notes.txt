@@ -1,0 +1,55 @@
+Spark -> Distribued Processing:
+
+Big Data:
+
+Str / Un Str / Semi Str
+Storage and Processing
+
+Sentiment Analysis -> Behavioural Analysis -> Ad Retargeting
+
+
+
+History Server -> Post 2.7
+
+Recovery Mechanism
+fsimage
+edits
+Check-pointing Process
+Secondary Name Node, now Standby Name Node
+Name Node Loads Metadata From amm the Sources to RAM whenever Restarted / Recovered
+Yarn - Job Queue
+
+1. Storage                  -> HDFS
+2. Processing               -> MR
+3. Cluster Resource Manager -> Yarn
+
+Hadoop Definitive Guide 4th Ed -> Tom White
+
+
+Name Node (S)
+Data Node (C)
+Secondary Name Node (S)
+
+History Server
+
+Resource Manager (S)
+Node Manager (C)
+
+
+Pseudo Distributed Mode
+
+
+Fully Distributed Mode
+
+Zookeeper (Quorum)
+
+Flink -> Claiming to be faster than Spark
+
+
+
+Tez + Druid / Lucence
+
+Azkaban
+
+Apache NiFi + Kafka + Storm
+

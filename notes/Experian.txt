@@ -1,0 +1,233 @@
+Experian US -> Credit Bureau!!
+
+All Finantial Data!  -> Like CIBIL
+
+Customers 
+	-> Bank Data 
+	-> Loan Data 
+	-> Credit Card 
+	-> Repay Data
+
+10,000 Different Providers
+
+Currently DB2
+
+GVAP -> Global Vlaue Added Product -> DB2 Cluster -> 330 Partitions -> 7 Years of data
+
+
+1. What is the Freqency of the input to the mainframe system
+2. 3 Days of ETL
+3. GVAP -> 
+
+
+18 Node D2.4x Machines
+
+GVAP Studio -> ETL Tool
+
+CostaMesa
+
+Thomas Hous (Tom)
+Dipti
+
+Ryan
+Radha Vinod
+
+Byran
+Paulal
+(BFS) -> 
+
+Anna
+Cathey
+Jackey
+Mathey
+
+
+Ankit Pandey
+Gautham Karnataki
+Roshan G
+Mohan Guruswami
+
+Indianapolis
+
+Texas - Alen
+
+Chile
+2 - 3
+Daniel
+
+
+
+
+
+
+
+
+https://lync.experian.com/experian.com/meet/radha.vinod/Q89L8012
+
+Anna Mubarrak
+
+High Level Overview of GVAP: -> R8
+
+Basically the Same Functionality
+Around 75% of GVAP in R8
+
+
+File one -> Twice a week -> Sat Trade data from file one gets loaded by Tuesday
+and other input files
+
+GVAM Database
+
+Current Database
+Archive Databases -> 12 years of data
+NSA
+
+All tables are documented in the Confluence
+
+
+Current GVAP
+	Prescreen -> 
+	Quest -> alreadt 
+	
+Archive
+	Extracts based on Score -> Give list based on criteria 
+	
+
+BFC -> Batch Find Consumer
+
+PIN -> Personal Identification Number -> Current GVAP Database
+
+
+Release 3 -> GVAP Studio -> UI + Execution Engine -> 
+TIP -> Trade Inquery Perm
+
+-> 4 Tables
+
+Expanded Trade -> 
+
+
+
+Release 3
+all 12 years of data
+
+Custom Scores and Attributes
+
+
+
+36 Snapshots of data -> 3 years
+
+
+
+
+
+
+
+
+
+
+
+
+
+R8 Scrum Team 2 Daily scrum -> https://lync.experian.com/experian.com/meet/radha.vinod/Y01TS4C2
+
+Scrum Meeting Notes:
+
+Always have a Ticket for what we are working
+
+Scrum Meetings List
+-> Daily Standup
+-> Grooming Sessions
+-> Story Pointing (Prioritization)
+-> Sprint Planning (Clarification / Estimations / Resource Utilization) 
+-> Demo / Review
+-> Retrospective
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+R8 GVAP Project:
+
+	GVAP -> Global Value Added Processes/Product
+
+
+
+R8 GVAP Data Model
+
+GVAP Archive
+GVAP Current
+AWS S3
+Saprk (now Hive) -> For Cleansing and Validation
+HDFS in AVRO Format
+
+
+Hadoop 
+12 + 2 (2 Jan Jul)
+
+
+
+12 Months -> at least 4 weeks per Month -> 96 Partitions per year
+52 Weeks -> 96 (Min) to 104 Partitions per year
+
+
+Merge
+
+2 Levels of Ranking?? Why??
+
+
+
+I -> 
+T -> 
+C -> 
+P -> 
+
+
+aws s3 ls s3a://...
+
+
+
+
+
+
+Shashank
+Dasaradha
+Neeshu
+Zeeshan
+Dinesh
+Hari
+Nikhil
+Somnath
+
+
+      SL. Task Description                             -> Task ID  -> Sub Task   -> Ticket   -> Member
+      01. Pre-processing Code Unit Coverage            -> RGPM-426 -> SubTask-13 -> RGPM-592 -> Dinesh
+      02. Load Base Code Unit Coverage                 -> RGPM-426 -> SubTask-14 -> RGPM-593 -> Dinesh
+      03. Merge Code Unit Coverage                     -> RGPM-426 -> SubTask-15 -> RGPM-594 -> Zeeshan
+      04. Frequency Report Code Unit Coverage          -> RGPM-426 -> SubTask-16 -> RGPM-595 -> Hari
+      05. Validate Frequency Report Code Unit Coverage -> RGPM-426 -> SubTask-17 -> RGPM-596 -> Nikhil
+      06. Spark SQL Performance Improvement            -> RGPM-162 -> SubTask-5  -> RGPM-597 -> Somnath

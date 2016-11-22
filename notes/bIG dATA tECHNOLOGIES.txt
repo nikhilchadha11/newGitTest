@@ -1,0 +1,31 @@
+
+http://usefulstuff.io/big-data/
+https://github.com/onurakpolat/awesome-bigdata#interesting-readings
+
+Software to be installed:
+
+ 1. Hadoop 2.7.2 (Server Cluster + Edge Node)
+ 2. MySQL 5.7.15
+ 3. Hive 2.1.0
+ 4. Sqoop 1.4.6
+ 5. Zookeeper 3.4.9 -- Removed
+ 6. HBase 1.2.3     -- Removed
+ 7. Pig 0.16.0
+ 8. Spark 2.0.0
+ 9. Apache Impala 2.7.0
+10. NodeJS
+11. Druid
+12. OpenTSDB
+13. NiFi
+14. Graphana
+15. MongoDB
+16. SlamData
+17. Cassandra
+18. 
+19. Kafka
+20. Oozie
+
+Scala + ScalaTest [FunSuite]
+Apache Maven
+S-coverage
+Git

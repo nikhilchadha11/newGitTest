@@ -1,0 +1,189 @@
+Spark:
+
+Standard RDDs:
+
+  Support 2 Types of Operations:
+  
+	Transformations -> Return new RDDs -> map() / filter()
+	Actions -> return Result to Driver / Write to Storage -> count() / first()
+
+	
+  Transformation Operations:
+	Map            -> 
+	Filter         -> 
+	FlatMap        -> 
+	Distinct       -> 
+	Sample         -> ??
+	Union          -> 
+	Intersection   -> 
+	Subtract       -> 
+	Cartesian      -> 
+
+	
+  Action Operations:
+	Reduce         -> 
+	Fold           -> 
+	Aggregate      -> 
+	Collect        -> 
+	Take           -> 
+	TakeOrdered    -> 
+	Top            -> 
+	First          -> 
+	Last           -> 
+	TakeSample     -> ??
+	Foreach        -> 
+	Count          -> 
+	CountByValue   -> 
+	Mean           -> Specific Functions for RDDs of Specific Data Types
+	Variance       -> Specific Functions for RDDs of Specific Data Types
+	Join           -> Specific Functions for RDDs of Specific Data Types
+
+	
+  Using Type Specific RDD Functions:
+  
+    In Scala the Conversion to RDDs with Special Functions is andeled automatically using the implicit Conversion.\
+    We need to add "import org.apache.spark.SparkContext._" for these conversions to work.
+
+	
+  Persistance Levels (Caching): -> Using the Persist and Unpersist Functions of RDDs.
+  
+    To save to cache -> RDD_NAME.persist(StorageLevel.LEVEL_NAME)
+    To remove from cache -> RDD_NAME.unpersist()
+	
+    |---------------------|-------|----------|--------|------|------------------------------------------------|
+    | LEVEL_NAME          | Space | CPU Time | Memory | Disk | Comments                                       |
+    |---------------------|-------|----------|--------|------|------------------------------------------------|
+    | MEMORY_ONLY         | High  | Low      | Yes    | No   | Unserialized in Memory.                        |
+    | MEMORY_ONLY_SER     | Low   | High     | Yes    | No   | Serialized in Memory .                         |
+    | MEMORY_AND_DISK     | High  | Medium   | Some   | Some | Disk Spill if memory full. Store Unserialized. |
+    | MEMORY_AND_DISK_SER | Low   | High     | Some   | Some | Disk Spill if memory full. Store Serialized.   |
+    | DISK_ONLY           | Low   | High     | No     | Yes  | Unserialized in Disk.                          |
+    |---------------------|-------|----------|--------|------|------------------------------------------------|
+
+
+PairRDDs -> Working with Key/Value Pairs
+  We can Create a Pair RDD from a Normal RDD using a Map Function that returns Key/Value Pairs.
+  
+  Transformations:
+  
+    ReduceByKey     -> 
+	GroupByKey      -> 
+	CombineByKey    -> 
+	MapValues       -> 
+	FlatMapValues   -> 
+	Keys            -> 
+	Values          -> 
+	SortByKey       -> 
+	SubtractByKey   -> 
+	Join            -> 
+	RightOuterJoin  -> 
+	LeftOuterJoin   -> 
+	CoGroup         -> Can work on 3 or more RDDs at once. Base of Joins.
+	PartitionBy     -> new HashPartitioner / RangePartitioner
+
+	
+  Actions:
+  
+    CountByKey      -> 
+	CollectAsMap    -> 
+	Lookup(key)     -> 
+	
+    We can Disable Map Side aggregation in CombineByKey() by partitioning the data or by using GroupByKey as it uses Partitioner Internally.
+
+	
+  Tuning the Level of Parallalism for code execution, Partitioning:
+  
+    Every RDD has a Fixed number of Partitions that determine the segree of parallelism to use when executing operations on the RDD.
+    Most of the Action functions accept an extra parameter as number of Partitions for Execution.
+    We can Repartition the data using the respective Spark Function. This is a Very Costly Operation.
+    Coalesce() is a more optimized repartitioning function provided by Spark.
+    rdd.partitions.size() <- Scala / Java
+    rdd.getNumPartitions() <- Python
+  
+  
+  Data Partitioning:
+  
+    This is useful only when a dataset is reused multiple times in key-oriented operations like joins.
+    Number of Partitions sould ideally be at least equal to the number of cores available to the Cluster
+    Always use Persistance with Partitioning
+      SortByKey  -> Forces Range Partitioned RDD
+      GroupByKey -> Forces Hash Partitioned RDD
+      Map        -> causes the new RDD to forget the Parent Partitions
+
+	  
+  Determining an RDDs Partitioner:
+  
+    if (rdd.partitioner.isDefined()) { 
+	  rdd.partitioner.get() 
+	}
+
+	
+  Operations that Benefit from Partitioning:
+  
+    cogroup()         -> 
+    groupWith()       -> 
+    join()            -> 
+    leftOuterJoin()   -> 
+    rightOuterJoin()  -> 
+    groupByKey()      -> 
+    reduceByKey()     -> 
+    combineBuKey()    -> 
+    lookup()          -> 
+    partitionBy()     -> 
+    sort()            -> 
+    mapValues()       -> 
+    flatMapValues()   -> 
+	
+  Note: We can write a Custom Partitioner if Required.
+
+  Loading / Storing data From / To Files:
+    
+	File Systems: 
+	  Local
+	  NFS
+	  HDFS
+	  S3
+	  
+	File Formats:
+	  |-----------------|------------|
+	  | Format Name     | Structured |
+	  |-----------------|------------|
+	  | TextFiles       | No         |
+	  | JSON            | Semi       |
+	  | CSV             | Yes        |
+	  | SequenceFiles   | Yes        |
+	  | ProtocolBuffers | Yes        |
+	  | ObjectFiles     | Yes        |
+	  |-----------------|------------|
+	
+	Load Commands:
+	  sc.textFile("file:///home/hduser/data_files/input/abc.txt")
+	  sc.sequenceFile(InputFile)
+	  sc.hadoopFile[InputKey, InputValue, InputFormat](InputFile)
+	  HiveContext(sc) --> Loading data from Hive
+	  
+	Save Commands:
+	  result.saveAsTextFile(OutputFile)
+	
+	Compression Formats:
+	  |--------|-------|-----------|-----------|--------------------------------------------|------|--------|
+	  | Format | Split | Avg Speed | Text Eff. | Hadoop Compression CODEC                   | Java | Native |
+	  |--------|-------|-----------|-----------|--------------------------------------------|------|--------|
+	  | GZIP   | No    | Fast      | High      | org.apache.hadoop.io.compress.GzipCodec    | Yes  | Yes    |
+	  | LZO    | Yes   | Very Fast | Medium    | com.hadoop.compression.lzo.LzoCodec        | Yes  | Yes    |
+	  | BZIP2  | Yes   | Slow      | Very High | org.apache.hadoop.io.compress.BZip2Codec   | Yes  | Yes    |
+	  | ZLIB   | No    | Slow      | Medium    | org.apache.hadoop.io.compress.DefaultCodec | Yes  | Yes    |
+	  | SNAPPY | No    | Very Fast | Low       | org.apache.hadoop.io.compress.SnappyCodec  | No   | Yes    |
+	  |--------|-------|-----------|-----------|--------------------------------------------|------|--------|
+	  
+	Spark Connectivity to Databases:
+	  1. Hive          -> Using HiveContext
+	  2. JSON          -> Using HiveContext
+	  3. MySQL         -> Using JDBC
+	  4. Cassandra     -> Using Cassandra API
+	  5. HBase         -> Using HBase API
+	  6. ElasticSearch -> Using ElasticSearch API
+	  7. MongoDB       -> Using HadoopDataset IO Format from MongoDB
+	  8. Druid         -> Using HadoopDataset IO Format from Druid
+	  
+	

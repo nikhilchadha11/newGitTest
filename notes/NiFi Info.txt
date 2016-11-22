@@ -1,0 +1,42 @@
+Domains:
+Consumer Lending
+Warranty
+Manufacturing
+
+Customer Churn
+
+
+Look into Australia / Japan / US / UK Locations
+
+A Small POC on NPS for marketing
+
+Conferences in and around the domains and tech and also locations
+
+look at the Architecture for Multi-Tenancy Systems
+
+
+
+
+NiFi v/s Kafka
+
+https://groups.google.com/forum/#!topic/confluent-platform/JKeccNEhwaQ
+From the little I know about NiFi:
+- push vs. pull: you tell NiFi each source where it must pull the data, and each destination where it must push the data. With Kafka, you're providing a pipeline or Hub so on the source side each client (producer) must push its data, while on the output, each client (consumer) pulls it's data. Difference in responsibilities and management along with a hub or central place to get data with Kafka, where with NiFi you're still getting data from multiple places and using NiFi to manage (you'd likely run into scale issues with the management and do multiple NiFi deployments and lose some visibility into data flows). Bear in mind that with Kafka you can do Spark streaming or Kafka Streaming soon, and you also have Kafka Connect so Kafka can out of the box push or pull, while looking like less management than NiFi.
+- performance: On the face of it Kafka appears to be more performant and would scale better via multiple brokers and partitions vs. NiFi's clustering capabilities though I've not intrinsic data since I've only read on NiFi.
+NiFi does have the edge in terms of security out of the box and with a provided GUI to handle the data flows. There are GUIs for Kafka, just not for data flows that I've seen yet publicly available.
+I think it comes down to your requirements. If you're looking for more of a streaming pipeline or data hub then for me Kafka wins, especially if it's at scale. If your interests are smaller then Nifi would seem to be a better fit. Either case is not a knock against the other though, again requirements and ticking those boxes ;-)
+
+Both Apache NiFi and Apache Kafka provide a broker to connect producers and consumers but they do so in a way that is quite different from one another and complementary when looking holistically at what it takes to connect the enterprise.
+In thinking about the 'data plane of connecting systems' the approach with Kafka is around having collaborating producers and consumers agree to exchange information on a specified topic using Kafka's protocol and exchanging data of a format and schema which both parties agree to and understand.  With NiFi by comparison we take the view that many enterprises have tremendous diversity of systems, protocols, formats, schemas, priorities and yet we still have to connect them.  In my view and in very simplistic terms Kafka's model is optimal when you can fix the majority of those terms of agreement between systems whereas NiFi's model is optimal when you cannot.
+We should also think about the 'control plane of connecting systems' and by this I mean think about how do we actually manage and control the flow of data.  With Kafka the logic of the dataflow lives in the systems that produce data and systems that consume data.  With NiFi we wanted to decouple the producers and consumers further and allow as much of the dataflow logic as possible or desired to live in the broker itself.  This is why NiFi has interactive command and control to effect immediate change and why NiFi offers the processor API to  operate on, alter, and route the data streams as they flow. It is also why NiFi provides powerful back-pressure and congestion control features. The model NiFi offers means you do have a point of central control with distributed execution, where you can address cross cutting concerns, where you can tackle things like compliance checks and tracking which you would not want on the producer/consumers.
+There are of course many other aspects to discuss but sticking to the ideas raised in the thread so far here is a response for a few of them.
+'Push vs Pull'
+In Kafka producers push to Kafka and consumers pull from Kafka.  This is a clean and scalable model but again it requires systems to accept and adopt that protocol.  In NiFi we do not require a specific protocol.  We support both push/pull patterns for getting data into NiFi just as we do for getting data out.  There are great architectural reasons to strive for the convergence that Kafka promotes and very practical realities of connecting systems across the enterprise that NiFi is designed to accommodate.
+'HA'
+On the data plane NiFi does not offer distributed data durability today as Kafka does.  As Lars pointed out the NiFi community is adding distributed durability but the value of it for NiFi's use cases will be less vital than it is for Kafka as NiFi isn't holding the data for the arbitrary consumer pattern that Kafka supports. If a NiFi node goes down the data is delayed while it is down. Avoiding data loss though is easily solved thanks to tried and true RAID or distributed block storage. NiFi's control plane does already provide high availability as the cluster manager and even multiple nodes in a cluster can be lost while the live flow can continue operating normally.
+'Performance'
+Kafka offers an impressive balance of both high throughput and low latency.  But comparing performance of Kafka and NiFi is not very meaningful given that they do very different things.  It would be best to discuss performance tradeoffs in the context of a particular use case.
+
+Thanks
+Joe
+

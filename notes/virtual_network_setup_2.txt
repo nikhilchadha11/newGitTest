@@ -13,10 +13,10 @@ Virtual Network Setup:
 4. add hosts -> For all the systems
     linux   -> /etc/hosts
 	windows -> C:\Windows\System32\drivers\etc
-	192.168.56.101  master.tavant.com       master  # IP Address of the Master Node
-	192.168.56.102  data01.tavant.com       data01  # IP Address of the Slave 1 Node
-	192.168.56.103  data02.tavant.com       data02  # IP Address of the Slave 2 Node
-	192.168.56.104  database.tavant.com     database
+	192.168.56.101  master.training.com       master  # IP Address of the Master Node
+	192.168.56.102  data01.training.com       data01  # IP Address of the Slave 1 Node
+	192.168.56.103  data02.training.com       data02  # IP Address of the Slave 2 Node
+	192.168.56.104  database.training.com     database
 	
 5. Create User with sudo access without password -> For all the systems
 	sudo passwd root
@@ -56,46 +56,46 @@ Virtual Network Setup:
 	cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
 
 	On the Master for hduser:
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@database.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@database.training.com
 	On the Slave 1 for hduser:
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@database.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@database.training.com
 	On the Slave 2 for hduser:
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@database.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@database.training.com
 	On the Database for hduser:
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@master.tavant.com
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data01.tavant.com
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data02.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@master.training.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data01.training.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data02.training.com
 	
 	Test Connectivity to all the systems:
 		ssh master
 		ssh data01
 		ssh data02
 		ssh database
-		ssh master.tavant.com
-		ssh data01.tavant.com
-		ssh data02.tavant.com
-		ssh database.tavant.com
+		ssh master.training.com
+		ssh data01.training.com
+		ssh data02.training.com
+		ssh database.training.com
 
 	On the Master for nikhil:
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@database.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@database.training.com
 	On the Slave 1 for nikhil:
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@database.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@database.training.com
 	On the Slave 2 for nikhil:
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@database.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@database.training.com
 	On the Database for nikhil:
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@master.tavant.com
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data01.tavant.com
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data02.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@master.training.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data01.training.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data02.training.com
 
 	Test Connectivity to all the systems:
 		ssh master
 		ssh data01
 		ssh data02
 		ssh database
-		ssh master.tavant.com
-		ssh data01.tavant.com
-		ssh data02.tavant.com
-		ssh database.tavant.com	
+		ssh master.training.com
+		ssh data01.training.com
+		ssh data02.training.com
+		ssh database.training.com	
 	
 7. MySQL Server Setup + User Setup
 
@@ -236,13 +236,13 @@ Virtual Network Setup:
 	start-dfs.sh && start-yarn.sh
 
 		http://192.168.56.101:50070/dfshealth.html#tab-overview
-		http://master.tavant.com:50070/dfshealth.html#tab-overview
+		http://master.training.com:50070/dfshealth.html#tab-overview
 		
 		http://192.168.56.102:50070/dfshealth.html#tab-overview
-		http://data01.tavant.com:50070/dfshealth.html#tab-overview
+		http://data01.training.com:50070/dfshealth.html#tab-overview
 		
 		http://192.168.56.103:50070/dfshealth.html#tab-overview
-		http://data02.tavant.com:50070/dfshealth.html#tab-overview
+		http://data02.training.com:50070/dfshealth.html#tab-overview
 		
 	stop-dfs.sh && stop-yarn.sh
 		
@@ -250,45 +250,45 @@ Virtual Network Setup:
 
 	sudo vim /etc/hosts
 		Add the following:
-		192.168.56.101  master.tavant.com       master  # IP Address of the Master Node
-		192.168.56.102  data01.tavant.com       data01  # IP Address of the Slave 1 Node
-		192.168.56.103  data02.tavant.com       data02  # IP Address of the Slave 2 Node
+		192.168.56.101  master.training.com       master  # IP Address of the Master Node
+		192.168.56.102  data01.training.com       data01  # IP Address of the Slave 1 Node
+		192.168.56.103  data02.training.com       data02  # IP Address of the Slave 2 Node
 
 	On the Master for hduser:
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data01.tavant.com
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data02.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data01.training.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data02.training.com
 	On the Slave 1 for hduser:
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@master.tavant.com
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data02.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@master.training.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data02.training.com
 	On the Slave 2 for hduser:
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@master.tavant.com
-		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data01.tavant.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@master.training.com
+		ssh-copy-id -i $HOME/.ssh/id_rsa.pub hduser@data01.training.com
 
 	ssh master
 	ssh data01
 	ssh data02
 
-	ssh master.tavant.com
-	ssh data01.tavant.com
-	ssh data02.tavant.com
+	ssh master.training.com
+	ssh data01.training.com
+	ssh data02.training.com
 
 	On the Master for nikhil:
-	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data01.tavant.com
-	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data02.tavant.com
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data01.training.com
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data02.training.com
 	On the Slave 1 for nikhil:
-	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@master.tavant.com
-	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data02.tavant.com
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@master.training.com
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data02.training.com
 	On the Slave 2 for nikhil:
-	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@master.tavant.com
-	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data01.tavant.com
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@master.training.com
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub nikhil@data01.training.com
 
 	ssh master
 	ssh data01
 	ssh data02
 
-	ssh master.tavant.com
-	ssh data01.tavant.com
-	ssh data02.tavant.com
+	ssh master.training.com
+	ssh data01.training.com
+	ssh data02.training.com
 	
 
 	Cluster Setup:
@@ -297,24 +297,24 @@ Virtual Network Setup:
 
 		sudo vim $HADOOP_HOME/etc/hadoop/masters
 		add line
-			"master.tavant.com"
+			"master.training.com"
 
 		sudo vim $HADOOP_HOME/etc/hadoop/slaves	
 		add lines
-			"data01.tavant.com"
-			"data02.tavant.com"
+			"data01.training.com"
+			"data02.training.com"
 
 		sudo vim $HADOOP_HOME/etc/hadoop/core-site.xml	
 			replace
 				hdfs://localhost:54310
 			with
-				hdfs://master.tavant.com:54310
+				hdfs://master.training.com:54310
 			
 		sudo vim $HADOOP_HOME/etc/hadoop/mapred-site.xml
 			replace
 				localhost:54311
 			with
-				master.tavant.com:54311
+				master.training.com:54311
 			
 		sudo vim $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 			change replication factor from 1 with 2
@@ -323,15 +323,15 @@ Virtual Network Setup:
 
 			<property>
 				<name>yarn.resourcemanager.resource-tracker.address</name>
-				<value>master.tavant.com:8025</value>
+				<value>master.training.com:8025</value>
 			</property>
 			<property>
 				<name>yarn.resourcemanager.scheduler.address</name>
-				<value>master.tavant.com:8035</value>
+				<value>master.training.com:8035</value>
 			</property>
 			<property>
 				<name>yarn.resourcemanager.address</name>
-				<value>master.tavant.com:8050</value>
+				<value>master.training.com:8050</value>
 			</property>
 		
 		Master Node Specific Changes:
@@ -348,8 +348,8 @@ Virtual Network Setup:
 			hdfs namenode -format
 			start-dfs.sh && start-yarn.sh
 			mr-jobhistory-daemon.sh start historyserver
-			http://master.tavant.com:8088
-			http://master.tavant.com:50070/dfshealth.html#tab-overview
+			http://master.training.com:8088
+			http://master.training.com:50070/dfshealth.html#tab-overview
 			stop-dfs.sh && stop-yarn.sh
 			stop-all.sh
 
@@ -386,7 +386,7 @@ Virtual Network Setup:
 	Replace the following components:
 
 		<name>javax.jdo.option.ConnectionURL</name>
-		<value>jdbc:mysql://database.tavant.com:3306/metastore?createDatabaseIfNotExist=true</value>
+		<value>jdbc:mysql://database.training.com:3306/metastore?createDatabaseIfNotExist=true</value>
 
 
 		<name>javax.jdo.option.ConnectionDriverName</name>
@@ -453,7 +453,7 @@ Virtual Network Setup:
     # -> For Testing Purposes we are using the Database System as client.
  
 	cd /usr/local
-	sudo scp -r hduser@master.tavant.com:/usr/local/hadoop /usr/local/
+	sudo scp -r hduser@master.training.com:/usr/local/hadoop /usr/local/
 
 	sudo vim ~/.bashrc
 
@@ -540,7 +540,7 @@ sudo tar -xzvf sakila-db.tar.gz >> /dev/null
 
 ls sakila-db
 
-mysql -h database.tavant.com -u root -proot
+mysql -h database.training.com -u root -proot
 
 SOURCE /usr/local/sqoop/sqoop_work/sakila-db/sakila-schema.sql;
 SOURCE /usr/local/sqoop/sqoop_work/sakila-db/sakila-data.sql;
@@ -557,7 +557,7 @@ GRANT ALL ON sakila.* TO 'sakila'@'192.168.56.101';
 FLUSH PRIVILEGES;
 quit;
 
-mysql -h database.tavant.com -u sakila -psakila
+mysql -h database.training.com -u sakila -psakila
 
 SHOW DATABASES;
 USE sakila;
@@ -569,21 +569,21 @@ sudo rm -rf sakila
 
 b. Import Sakila from MySQL to HDFS
 
-sqoop list-databases --connect jdbc:mysql://database.tavant.com:3306/ --username sakila --password sakila
-sqoop list-databases --connect jdbc:mysql://database.tavant.com:3306/ --username sakila -P
+sqoop list-databases --connect jdbc:mysql://database.training.com:3306/ --username sakila --password sakila
+sqoop list-databases --connect jdbc:mysql://database.training.com:3306/ --username sakila -P
 
 sudo vim import_mysql.txt
 	Add the following Text:
 		list-databases
 		--connect
-		jdbc:mysql://database.tavant.com:3306/
+		jdbc:mysql://database.training.com:3306/
 		--username
 		sakila
 		--password
 		sakila
 
 sqoop --options-file /usr/local/sqoop/sqoop_work/import_mysql.txt
-sqoop list-tables --connect jdbc:mysql://database.tavant.com:3306/sakila --username sakila --password sakila
+sqoop list-tables --connect jdbc:mysql://database.training.com:3306/sakila --username sakila --password sakila
 
 15. Install Pig in Database Client Node: -> https://dwbi.org/etl/bigdata/198-install-pig-in-client-node-of-hadoop-cluster
 
@@ -625,15 +625,15 @@ a. Master Setup
 		export SPARK_WORKER_CORES=6
 		export SPARK_WORKER_DIR=/home/hduser/work/sparkdata
 	sudo vim slaves
-		hduser@data01.tavant.com
-		hduser@data02.tavant.com
+		hduser@data01.training.com
+		hduser@data02.training.com
 	sudo chown -R hduser /usr/local/spark
 
 b. Slave Setup (Execute in Master Node Itself)
 	cd /usr/local 
-	sudo scp -r spark hduser@data01.tavant.com:/home/hduser
-	sudo scp -r spark hduser@data02.tavant.com:/home/hduser
-	ssh hduser@data01.tavant.com
+	sudo scp -r spark hduser@data01.training.com:/home/hduser
+	sudo scp -r spark hduser@data02.training.com:/home/hduser
+	ssh hduser@data01.training.com
 	sudo mv /home/hduser/spark /usr/local
 	sudo chown -R hduser /usr/local/spark
 	sudo vim ~/.bashrc
@@ -641,7 +641,7 @@ b. Slave Setup (Execute in Master Node Itself)
 		export PATH=$PATH:$SPARK_HOME/bin
 	source ~/.bashrc
 	exit
-	ssh hduser@data02.tavant.com
+	ssh hduser@data02.training.com
 	sudo mv /home/hduser/spark /usr/local
 	sudo chown -R hduser /usr/local/spark
 	sudo vim ~/.bashrc
@@ -651,7 +651,7 @@ b. Slave Setup (Execute in Master Node Itself)
 	exit
 
 Edge Node
-	sudo scp -r hduser@master.tavant.com:/usr/local/spark /usr/local/
+	sudo scp -r hduser@master.training.com:/usr/local/spark /usr/local/
 	sudo vim ~/.bashrc
 		export SPARK_HOME=/usr/local/spark
 		export PATH=$PATH:$SPARK_HOME/bin
@@ -683,12 +683,12 @@ sudo vim /usr/local/zookeeper/conf/zoo.cfg
 	clientPort=2181
 	initLimit=10
 	syncLimit=5
-	server.1=master.tavant.com:2888:3888
-	server.2=data01.tavant.com:2888:3888
-	server.3=data02.tavant.com:2888:3888
+	server.1=master.training.com:2888:3888
+	server.2=data01.training.com:2888:3888
+	server.3=data02.training.com:2888:3888
 
 ssh hduser@data01
-sudo scp -r hduser@master.tavant.com:/usr/local/zookeeper /usr/local/ >> /dev/null
+sudo scp -r hduser@master.training.com:/usr/local/zookeeper /usr/local/ >> /dev/null
 sudo chown -R hduser /usr/local/zookeeper
 
 sudo vim ~/.bashrc
@@ -697,7 +697,7 @@ sudo vim ~/.bashrc
 source ~/.bashrc
 
 ssh hduser@data02
-sudo scp -r hduser@master.tavant.com:/usr/local/zookeeper /usr/local/ >> /dev/null
+sudo scp -r hduser@master.training.com:/usr/local/zookeeper /usr/local/ >> /dev/null
 sudo chown -R hduser /usr/local/zookeeper
 
 sudo vim ~/.bashrc
@@ -732,7 +732,7 @@ sudo $ZOOKEEPER_HOME/bin/zkServer.sh stop
 	<configuration>
 		<property>
 			<name>hbase.rootdir</name>
-			<value>hdfs://master.tavant.com:8020/hbase</value>
+			<value>hdfs://master.training.com:8020/hbase</value>
 		</property>
 		<property>
 			<name>hbase.cluster.distributed</name>
@@ -744,7 +744,7 @@ sudo $ZOOKEEPER_HOME/bin/zkServer.sh stop
 		</property>
 		<property>
 			<name>hbase.zookeeper.quorum</name>
-			<value>hduser@master.tavant.com</value>
+			<value>hduser@master.training.com</value>
 		</property>
 		<property>
 			<name>hbase.zookeeper.property.clientPort</name>
@@ -753,17 +753,17 @@ sudo $ZOOKEEPER_HOME/bin/zkServer.sh stop
 	</configuration>
 
 	sudo vim $HBASE_HOME/conf/regionservers
-		hduser@data01.tavant.com
-		hduser@data02.tavant.com
+		hduser@data01.training.com
+		hduser@data02.training.com
 
 	mkdir -p /usr/local/zookeeper
 
 # Region Server Setup
 
-	ssh data01.tavant.com
+	ssh data01.training.com
 	sudo rm -r /usr/local/zookeeper
 	cd /usr/local 
-	sudo scp -r hduser@master.tavant.com:/usr/local/hbase /usr/local >> /dev/null
+	sudo scp -r hduser@master.training.com:/usr/local/hbase /usr/local >> /dev/null
 
 	sudo vim ~/.bashrc
 		export HBASE_HOME=/usr/local/hbase
@@ -773,10 +773,10 @@ sudo $ZOOKEEPER_HOME/bin/zkServer.sh stop
 
 	exit
 
-	ssh data02.tavant.com
+	ssh data02.training.com
 
 	cd /usr/local 
-	sudo scp -r hduser@master.tavant.com:/usr/local/hbase /usr/local >> /dev/null
+	sudo scp -r hduser@master.training.com:/usr/local/hbase /usr/local >> /dev/null
 
 	sudo vim ~/.bashrc
 		export HBASE_HOME=/usr/local/hbase
@@ -814,7 +814,7 @@ sudo rm apache-impala-incubating-2.7.0.tar.gz
 	sudo apt-get install impala-state-store # Service start/stop script
 	sudo apt-get install impala-catalog     # Service start/stop script
 
-sudo scp /home/nikhil/apache-impala-incubating-2.7.0.tar.gz hduser@data01.tavant.com:/home/hduser/apache-impala-incubating-2.7.0.tar.gz
-sudo scp /home/nikhil/apache-impala-incubating-2.7.0.tar.gz hduser@data02.tavant.com:/home/hduser/apache-impala-incubating-2.7.0.tar.gz
+sudo scp /home/nikhil/apache-impala-incubating-2.7.0.tar.gz hduser@data01.training.com:/home/hduser/apache-impala-incubating-2.7.0.tar.gz
+sudo scp /home/nikhil/apache-impala-incubating-2.7.0.tar.gz hduser@data02.training.com:/home/hduser/apache-impala-incubating-2.7.0.tar.gz
 ssh data02
 sudo mv ./apache-impala-incubating-2.7.0.tar.gz /usr/local/
